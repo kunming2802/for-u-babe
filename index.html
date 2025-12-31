@@ -10,6 +10,7 @@
     background: linear-gradient(to bottom, #ffc0cb, #ff69b4);
     font-family: 'Poppins', sans-serif;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -44,6 +45,13 @@
     text-shadow: 2px 2px 6px #ff69b4;
   }
 
+  #time {
+    font-size: 1.2em;
+    margin-top: 0.3em;
+    color: #fff0f5;
+    text-shadow: 2px 2px 6px #ff1493;
+  }
+
   /* Spotify Embed */
   iframe {
     position: fixed;
@@ -75,9 +83,9 @@
 <canvas id="fireworks"></canvas>
 
 <div class="content">
-  <h1>Happy New Year 2026</h1>
-  <p>May all your dreams come true and all your hopes be fulfilled,</p>
-  <p>and may every day of 2026 be as bright and amazing as you are!🖤</p>
+  <h1 id="greeting">Loading...</h1>
+  <p id="message">...</p>
+  <div id="time">--:--:--</div>
 </div>
 
 <!-- Spotify Embed -->
@@ -145,6 +153,37 @@ window.addEventListener('resize', () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 });
+
+// ฟังก์ชันอัปเดตข้อความและเวลา
+function updateGreeting() {
+  const now = new Date();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const second = now.getSeconds();
+
+  // แสดงเวลาปัจจุบัน
+  const timeStr = `${hour.toString().padStart(2,'0')}:${minute.toString().padStart(2,'0')}:${second.toString().padStart(2,'0')}`;
+  document.getElementById('time').textContent = timeStr;
+
+  const greeting = document.getElementById('greeting');
+  const message = document.getElementById('message');
+
+  // ก่อนเที่ยงคืน
+  if (hour < 24 && (hour !== 0 || minute !== 0)) {
+    greeting.textContent = "Counting down with you";
+    message.textContent = "Get ready to welcome 2026!";
+  }
+
+  // หลังเที่ยงคืน
+  if (hour === 0 && minute >= 0) {
+    greeting.textContent = "Happy New Year 2026!💟";
+    message.textContent = "May all your dreams come true this year!";
+  }
+}
+
+// เรียกอัปเดตทุกวินาที
+updateGreeting();
+setInterval(updateGreeting, 1000);
 </script>
 
 </body>
