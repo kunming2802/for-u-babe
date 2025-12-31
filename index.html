@@ -19,7 +19,6 @@
     position: relative;
   }
 
-  /* Canvas อยู่ด้านหลังข้อความ */
   canvas {
     position: absolute;
     top: 0;
@@ -46,13 +45,11 @@
   }
 
   #time {
-    font-size: 1.2em;
+    font-size: 1.1em;
     margin-top: 0.3em;
     color: #fff0f5;
-    text-shadow: 2px 2px 6px #ff1493;
   }
 
-  /* Spotify Embed */
   iframe {
     position: fixed;
     bottom: 20px;
@@ -63,7 +60,6 @@
     z-index: 1;
   }
 
-  /* ข้อความมุมล่างขวา ฟีลจดหมาย */
   .letter {
     position: fixed;
     bottom: 20px;
@@ -72,9 +68,7 @@
     font-family: 'Segoe Script', cursive, 'Poppins', sans-serif;
     color: #fff0f5;
     font-size: 1.2em;
-    line-height: 1.3em;
     z-index: 1;
-    text-shadow: 1px 1px 4px #c21616;
   }
 </style>
 </head>
@@ -88,102 +82,85 @@
   <div id="time">--:--:--</div>
 </div>
 
-<!-- Spotify Embed -->
-<iframe src="https://open.spotify.com/embed/track/56wDFSIa9Tr7zbEXUVMwjP?utm_source=generator" width="300" height="80" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+<iframe src="https://open.spotify.com/embed/track/56wDFSIa9Tr7zbEXUVMwjP"
+width="300" height="80"
+allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
 
-<!-- ข้อความมุมล่างขวา -->
 <div class="letter">
   Love you<br>
   kunming
 </div>
 
 <script>
-// Fireworks effect - พลุหลายสี
+// ===== Fireworks =====
 const canvas = document.getElementById('fireworks');
 const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = innerWidth;
+canvas.height = innerHeight;
 
 let particles = [];
 
-function createFirework() {
+function firework() {
   const x = Math.random() * canvas.width;
   const y = Math.random() * canvas.height / 2;
-  const colors = ['#ff69b4','#ff1493','#ffb6c1','#ffc0cb','#ffccff','#ff8db1'];
-  for(let i=0;i<100;i++){
+  const colors = ['#ff69b4','#ff1493','#ffb6c1','#ffc0cb'];
+  for (let i = 0; i < 80; i++) {
     particles.push({
-      x: x,
-      y: y,
+      x, y,
       vx: (Math.random() - 0.5) * 5,
       vy: (Math.random() - 0.5) * 5,
-      alpha: 1,
-      color: colors[Math.floor(Math.random() * colors.length)]
+      a: 1,
+      c: colors[Math.floor(Math.random()*colors.length)]
     });
   }
 }
 
 function animate() {
-  ctx.fillStyle = 'rgba(0,0,0,0.1)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = 'rgba(0,0,0,0.15)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  for(let i=particles.length-1; i>=0; i--){
-    const p = particles[i];
-    p.x += p.vx;
-    p.y += p.vy;
-    p.alpha -= 0.01;
-    ctx.fillStyle = p.color;
-    ctx.globalAlpha = p.alpha;
+  particles.forEach((p,i)=>{
+    p.x+=p.vx; p.y+=p.vy; p.a-=0.01;
+    ctx.globalAlpha=p.a;
+    ctx.fillStyle=p.c;
     ctx.beginPath();
-    ctx.arc(p.x, p.y, 3, 0, Math.PI*2);
+    ctx.arc(p.x,p.y,3,0,Math.PI*2);
     ctx.fill();
-    if(p.alpha <= 0){
-      particles.splice(i,1);
-    }
-  }
-  ctx.globalAlpha = 1;
+    if(p.a<=0) particles.splice(i,1);
+  });
+  ctx.globalAlpha=1;
   requestAnimationFrame(animate);
 }
 
-// สร้างดอกไม้ไฟทุกช่วงเวลา
-setInterval(createFirework, 800);
+setInterval(firework,800);
 animate();
 
-// ปรับ canvas ตามขนาดหน้าจอ
-window.addEventListener('resize', () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
-
-// ฟังก์ชันอัปเดตข้อความและเวลา
+// ===== Time + Logic =====
 function updateGreeting() {
   const now = new Date();
-  const hour = now.getHours();
-  const minute = now.getMinutes();
-  const second = now.getSeconds();
 
-  // แสดงเวลาปัจจุบัน
-  const timeStr = `${hour.toString().padStart(2,'0')}:${minute.toString().padStart(2,'0')}:${second.toString().padStart(2,'0')}`;
-  document.getElementById('time').textContent = timeStr;
+  // เป้าหมาย: 31 ธ.ค. 2568 เวลา 23:59:59 (ค.ศ. 2025)
+  const target = new Date('2025-12-31T23:59:59');
 
-  const greeting = document.getElementById('greeting');
-  const message = document.getElementById('message');
+  const h = now.getHours().toString().padStart(2,'0');
+  const m = now.getMinutes().toString().padStart(2,'0');
+  const s = now.getSeconds().toString().padStart(2,'0');
+  document.getElementById('time').textContent = `${h}:${m}:${s}`;
 
-  // ก่อนเที่ยงคืน
-  if (hour < 24 && (hour !== 0 || minute !== 0)) {
-    greeting.textContent = "Counting down with you";
-    message.textContent = "Get ready to welcome 2026!";
-  }
+  const g = document.getElementById('greeting');
+  const msg = document.getElementById('message');
 
-  // หลังเที่ยงคืน
-  if (hour === 0 && minute >= 0) {
-    greeting.textContent = "Happy New Year 2026!💟";
-    message.textContent = "May all your dreams come true this year!";
+  if (now <= target) {
+    g.textContent = "Counting down with you";
+    msg.textContent = "Get ready to welcome 2026!";
+  } else {
+    g.textContent = "Happy New Year 2026💟";
+    msg.textContent = "May all your dreams come true this year!";
   }
 }
 
-// เรียกอัปเดตทุกวินาที
 updateGreeting();
-setInterval(updateGreeting, 1000);
+setInterval(updateGreeting,1000);
 </script>
 
 </body>
