@@ -1,155 +1,151 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>song for who</title>
-
+<title>Happy New Year 2026</title>
 <style>
-* {
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: radial-gradient(circle at top, #1a1a1a, #000);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  padding: 40px 0;
-}
-
-.container {
-  width: 90%;
-  max-width: 520px;
-  background: rgba(20,20,20,0.95);
-  border-radius: 25px;
-  padding: 24px;
-}
-
-h1, p {
-  text-align: center;
-}
-
-p {
-  color: #aaa;
-  font-size: 14px;
-}
-
-.song {
-  background: rgba(255,255,255,0.05);
-  border-radius: 15px;
-  padding: 14px;
-  margin: 12px 0;
-  cursor: pointer;
-  transition: 0.3s;
-  animation: fadeUp 0.6s ease forwards;
-}
-
-.song:hover {
-  background: rgba(255,255,255,0.12);
-  transform: scale(1.02);
-}
-
-.lyrics {
-  display: none;
-  margin-top: 10px;
-  font-size: 14px;
-  text-align: center;
-  color: #ddd;
-}
-
-iframe {
-  width: 100%;
-  height: 80px;
-  border: none;
-  border-radius: 12px;
-  margin-top: 10px;
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #ffc0cb, #ff69b4);
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+    text-align: center;
+    position: relative;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  /* Canvas อยู่ด้านหลังข้อความ */
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
   }
-}
+
+  .content {
+    position: relative;
+    z-index: 1;
+  }
+
+  h1 {
+    font-size: 4em;
+    margin: 0;
+    text-shadow: 2px 2px 10px #ff69b4;
+  }
+
+  p {
+    font-size: 1.3em;
+    margin-top: 0.5em;
+    color: #ffb6c1;
+    text-shadow: 2px 2px 6px #ff69b4;
+  }
+
+  /* Spotify Embed */
+  iframe {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 12px;
+    border: none;
+    z-index: 1;
+  }
+
+  /* ข้อความมุมล่างขวา ฟีลจดหมาย */
+  .letter {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    text-align: right;
+    font-family: 'Segoe Script', cursive, 'Poppins', sans-serif;
+    color: #fff0f5;
+    font-size: 1.2em;
+    line-height: 1.3em;
+    z-index: 1;
+    text-shadow: 1px 1px 4px #c21616;
+  }
 </style>
 </head>
-
 <body>
-<div class="container">
-  <h1>song for you ♥ </h1>
-  <p>
-    Love is flower<br>
-    you're got to ler grow
-  </p>
 
-  <div id="songList"></div>
+<canvas id="fireworks"></canvas>
+
+<div class="content">
+  <h1>Happy New Year 2026</h1>
+  <p>May all your dreams come true and all your hopes be fulfilled,</p>
+  <p>and may every day of 2026 be as bright and amazing as you are!🖤</p>
+</div>
+
+<!-- Spotify Embed -->
+<iframe src="https://open.spotify.com/embed/track/56wDFSIa9Tr7zbEXUVMwjP?utm_source=generator" width="300" height="80" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+
+<!-- ข้อความมุมล่างขวา -->
+<div class="letter">
+  Love you<br>
+  kunming
 </div>
 
 <script>
-const songs = [
-  {
-    title: "All That I Know – Zuhair",
-    lyrics: "So get closer to me\nAnd tell me you want this for forever",
-    spotify: "https://open.spotify.com/embed/track/6WWT1CpP2R1iFi6GtMRIAc"
-  },
-  {
-    title: "My Love Mine All Mine – Mitski",
-    lyrics: "Moon, tell me if I could\nSend up my heart to you?",
-    spotify: "https://open.spotify.com/embed/track/3vkCueOmm7xQDoJ17W1Pm3"
-  },
-  {
-    title: "Better With You – Austin Mahone",
-    lyrics: "I like it better with you\nThere's nothing that compares to your company",
-    spotify: "https://open.spotify.com/embed/track/1mw3N6ALRy0RjxhkxVbKrJ"
-  },
-  {
-    title: "Double Take – Dhruv",
-    lyrics: "You're my vice, you're my muse\nYou're a nineteenth-floor view",
-    spotify: "https://open.spotify.com/embed/track/47isJpIIO8m7BJEhiFhnaf"
-  },
-  {
-    title: "Tip Toe – HYBS",
-    lyrics: "If you're in the mood\nWe can take it to the moon",
-    spotify: "https://open.spotify.com/embed/track/0MJ5wKsPEeihONNfugHGy7"
+// Fireworks effect - พลุหลายสี
+const canvas = document.getElementById('fireworks');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+function createFirework() {
+  const x = Math.random() * canvas.width;
+  const y = Math.random() * canvas.height / 2;
+  const colors = ['#ff69b4','#ff1493','#ffb6c1','#ffc0cb','#ffccff','#ff8db1'];
+  for(let i=0;i<100;i++){
+    particles.push({
+      x: x,
+      y: y,
+      vx: (Math.random() - 0.5) * 5,
+      vy: (Math.random() - 0.5) * 5,
+      alpha: 1,
+      color: colors[Math.floor(Math.random() * colors.length)]
+    });
   }
-];
-
-const list = document.getElementById("songList");
-
-function render() {
-  list.innerHTML = "";
-
-  songs.forEach((s) => {
-    const div = document.createElement("div");
-    div.className = "song";
-
-    div.innerHTML = `
-      <strong>${s.title}</strong>
-      <div class="lyrics">
-        <p>${s.lyrics.replace(/\n/g,"<br>")}</p>
-        <iframe src="${s.spotify}"
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
-        </iframe>
-      </div>
-    `;
-
-    div.onclick = () => {
-      document.querySelectorAll(".lyrics").forEach(l => l.style.display = "none");
-      div.querySelector(".lyrics").style.display = "block";
-    };
-
-    list.appendChild(div);
-  });
 }
 
-render();
+function animate() {
+  ctx.fillStyle = 'rgba(0,0,0,0.1)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  for(let i=particles.length-1; i>=0; i--){
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.alpha -= 0.01;
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.alpha;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 3, 0, Math.PI*2);
+    ctx.fill();
+    if(p.alpha <= 0){
+      particles.splice(i,1);
+    }
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(animate);
+}
+
+// สร้างดอกไม้ไฟทุกช่วงเวลา
+setInterval(createFirework, 800);
+animate();
+
+// ปรับ canvas ตามขนาดหน้าจอ
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
 </script>
+
 </body>
 </html>
